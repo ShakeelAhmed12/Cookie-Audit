@@ -38,15 +38,13 @@ export default function CookieTable({ cookies }: { cookies: Cookie[] }) {
                         cookies.map((cookie, index) => {
                             const id = `${cookie.name} - ${cookie.domain} - ${index}`;
                             return (
-                                <>
-                                    <tr key={`cookie-${id}`} className="border-b last:border-b-0 border-lightblue-400">
-                                        {TABLE_COLUMNS.map((column) => (
-                                            <td key={column.key} className="p-3 font-medium truncate max-w-[150px] whitespace-nowrap">
-                                                {cookie[column.key] !== undefined ? cookie[column.key]?.toString() : ""}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                </>
+                                <tr key={`cookie-${id}`} className="border-b last:border-b-0 border-lightblue-400">
+                                    {TABLE_COLUMNS.map((column) => (
+                                        <td key={column.key} className="p-3 font-medium truncate max-w-[150px] whitespace-nowrap">
+                                            {cookie[column.key] !== undefined ? cookie[column.key]?.toString() : ""}
+                                        </td>
+                                    ))}
+                                </tr>
                             );
                         })
                     )}
