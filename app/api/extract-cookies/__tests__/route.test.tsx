@@ -16,9 +16,19 @@ describe("POST /api/extract-cookies", () => {
   let mockRequest: any;
 
   beforeEach(() => {
+    const mockBannerButton = {
+      click: vi.fn().mockResolvedValue(undefined),
+    };
+
     mockPage = {
       goto: vi.fn().mockResolvedValue(undefined),
       waitForTimeout: vi.fn().mockResolvedValue(undefined),
+      $: vi.fn().mockImplementation((selector: string) => {
+        if (selector === 'button:has-text("Accept Cookies")') {
+          return Promise.resolve(mockBannerButton);
+        }
+        return Promise.resolve(null);
+      }),
     };
 
     mockContext = {
@@ -338,6 +348,22 @@ describe("POST /api/extract-cookies", () => {
       await POST(mockRequest);
 
       expect(mockPage.waitForTimeout).toHaveBeenCalledWith(2000);
+    });
+
+    it("test to see if the banner button is clicked when a matching selector is found", async () => {
+      mockContext.cookies.mockResolvedValue([]);
+
+      mockRequest = new NextRequest("http://localhost/api/extract-cookies", {
+        method: "POST",
+        body: JSON.stringify({ url: "https://example.com" }),
+      });
+
+      await POST(mockRequest);
+
+      expect(mockPage.$).toHaveBeenCalledWith('button:has-text("Accept All")');
+      expect(mockPage.$).toHaveBeenCalledWith('button:has-text("Accept Cookies")');
+      expect(mockPage.$).toHaveBeenCalledTimes(2);
+      expect(mockPage.waitForTimeout).toHaveBeenCalledWith(1000);
     });
 
     it("test to see if browser is closed after successful extraction", async () => {

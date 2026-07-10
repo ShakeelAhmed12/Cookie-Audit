@@ -84,7 +84,7 @@ export default function Home() {
 
       {cookies.length > 0 && (
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold mb-4">Cookies Found for {scannedURL}</h2>
+          <h2 className="text-2xl font-semibold mb-4">A total of {cookies.length} cookies have been found</h2>
           <CookieTable cookies={cookies} />
         </section>
       )}

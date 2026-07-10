@@ -27,6 +27,28 @@ export async function POST(request: NextRequest) {
       await page.goto(parsedURL.href, { waitUntil: "networkidle", timeout: 70000 });
 
       await page.waitForTimeout(2000);
+
+      const cookieBannerSelectors = [
+        'button:has-text("Accept All")',
+        'button:has-text("Accept Cookies")',
+        'button:has-text("Accept")',
+        'button:has-text("Agree")',
+      ];
+
+      const button = await (async () => {
+        for (const bannerSelector of cookieBannerSelectors) {
+          const candidateButton = await page.$(bannerSelector);
+          if (candidateButton) {
+            return candidateButton;
+          }
+        }
+        return null;
+      })();
+
+      if (button) {
+        await button.click();
+        await page.waitForTimeout(1000);
+      }
     
       const cookies = await context.cookies();
 
